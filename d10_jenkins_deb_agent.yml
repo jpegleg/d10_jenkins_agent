@@ -142,7 +142,7 @@
 ##########################################
 
 
-  - name: cURL the repo key and add the repo
+  - name: cURL the repo key for docker
     shell: curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add -
     tags:
     - dockerRepo
