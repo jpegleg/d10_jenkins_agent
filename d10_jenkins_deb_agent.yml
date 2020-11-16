@@ -1,0 +1,65 @@
+---
+# Ansible job to make a jenkins Debian 10 build server.
+
+- hosts: main
+  tasks:
+
+  - name: upgrade all packages
+    apt:
+      name: '*'
+      state: latest
+    tags:
+      - upgrade
+      - patch
+
+#######################################
+##                                   ##
+##     Install build packages        ##
+##                                   ##
+#######################################
+
+
+  - name: install build-essential
+    apt:
+      name: 'build-essential'
+      state: latest
+    tags:
+      - configure
+      - builddeb
+
+  - name: install openjdk-11-jdk
+    apt:
+      name: 'openjdk-11-jdk'
+      state: latest
+    tags:
+      - configure
+      - builddeb
+
+
+##########################################
+##                                      ##
+#                                        #
+#           Local configure.             #
+#                                        #
+##                                      ##
+##########################################
+
+  - name: setup build dir
+    shell: mkdir -p /srv/build/ 2>/dev/null
+
+##########################################
+##                                      ##
+#                                        #
+#           Install jenkins.             #
+#                                        #
+##                                      ##
+##########################################
+
+
+##########################################
+##                                      ##
+#                                        #
+#          Install docker-ce.            #
+#                                        #
+##                                      ##
+##########################################
