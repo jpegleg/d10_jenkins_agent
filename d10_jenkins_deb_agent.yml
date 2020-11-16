@@ -14,10 +14,65 @@
 
 #######################################
 ##                                   ##
-##     Install build packages        ##
+## Install fetch and build packages  ##
 ##                                   ##
 #######################################
 
+  - name: install apt-transport-https
+    apt:
+      name: 'apt-transport-https'
+      state: latest
+    tags:
+      - configure
+      - builddeb
+
+  - name: install ca-certificates
+    apt:
+      name: 'ca-certificates'
+      state: latest
+    tags:
+      - configure
+      - builddeb
+
+  - name: install curl
+    apt:
+      name: 'curl'
+      state: latest
+    tags:
+      - configure
+      - builddeb
+
+  - name: install wget
+    apt:
+      name: 'wget'
+      state: latest
+    tags:
+      - configure
+      - builddeb
+
+  - name: install git
+    apt:
+      name: 'git'
+      state: latest
+    tags:
+      - configure
+      - builddeb
+
+  - name: install gnupg-agent
+    apt:
+      name: 'gnupg-agent'
+      state: latest
+    tags:
+      - configure
+      - builddeb
+
+  - name: install software-properties-common
+    apt:
+      name: 'software-properties-common'
+      state: latest
+    tags:
+      - configure
+      - builddeb
 
   - name: install build-essential
     apt:
@@ -47,6 +102,7 @@
   - name: setup build dir
     shell: mkdir -p /srv/build/ 2>/dev/null
 
+
 ##########################################
 ##                                      ##
 #                                        #
@@ -54,6 +110,27 @@
 #                                        #
 ##                                      ##
 ##########################################
+
+  - name: setup jenkins repo
+    shell: wget -q -O - https://pkg.jenkins.io/debian/jenkins.io.key | apt-key add - && sh -c 'echo deb http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
+    tags:
+    - jenkins
+    - configure
+
+  - name: install jenkins
+    apt:
+      name: 'jenkins'
+      state: latest
+    tags:
+      - configure
+      - jenkins
+
+  - name: enable jenkins
+    shell: systemctl enable jenkins
+    tags:
+      - configure
+      - jenkins
+
 
 
 ##########################################
@@ -63,3 +140,45 @@
 #                                        #
 ##                                      ##
 ##########################################
+
+
+  - name: cURL the repo key and add the repo
+    shell: curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add -
+    tags:
+    - dockerRepo
+
+  - name: install docker repo file
+    shell: add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable"
+    tags:
+    - dockerRepo
+
+  - name: install docker-ce
+    apt:
+      name: 'docker-ce'
+      state: latest
+    tags:
+    - docker
+    - patch
+
+  - name: install docker-ce-cli
+    apt:
+      name: 'docker-ce-cli'
+      state: latest
+    tags:
+    - docker
+    - patch
+
+  - name: install containerd.io
+    apt:
+      name: 'containerd.io'
+      state: latest
+    tags:
+    - docker
+    - patch
+
+  - name: systemctl enable
+    shell: systemctl enable docker
+    tags:
+    - docker
+
+...
