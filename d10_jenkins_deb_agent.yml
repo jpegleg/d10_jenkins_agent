@@ -66,6 +66,14 @@
       - configure
       - builddeb
 
+  - name: install dh-make
+    apt:
+      name: 'dh-make'
+      state: latest
+    tags:
+      - configure
+      - builddeb
+
   - name: install software-properties-common
     apt:
       name: 'software-properties-common'
